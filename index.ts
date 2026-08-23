@@ -1,5 +1,5 @@
-import express, { Application, Express, Request, Response } from 'express'
-import { gql, ApolloServer } from "apollo-server-express"
+import express, { Express } from 'express'
+import { ApolloServer } from "apollo-server-express"
 import dotenv from 'dotenv'
 import * as database from './config/database'
 import { typeDefs } from './typedefs'
@@ -10,7 +10,7 @@ const startServer = async () => {
   dotenv.config()
 
   // Connect Database
-  database.connectDatabase()
+  await database.connectDatabase()
 
   const app: Express = express()
   const port: number | string = process.env.PORT || 3000;
