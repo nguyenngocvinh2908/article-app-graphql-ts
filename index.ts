@@ -3,7 +3,7 @@ import { ApolloServer } from "apollo-server-express"
 import dotenv from 'dotenv'
 import * as database from './config/database'
 import { typeDefs } from './typeDefs/index'
-import { resolvers } from './resolvers'
+import { resolvers } from './resolvers/index'
 
 const startServer = async () => {
   // Env
