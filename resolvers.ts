@@ -4,9 +4,10 @@ interface ByIdArgs {
   id: string
 }
 interface ArticleInput {
-  title: string
-  avatar?: string
-  description?: string
+  title: string,
+  avatar?: string,
+  description?: string,
+  categoryId?: string
 }
 interface CategoryInput {
   title: string,
@@ -42,6 +43,13 @@ export const resolvers = {
     getCategory: async (_: unknown, args: ByIdArgs) => {
       const { id } = args
       const category = await Category.findOne({ _id: id, deleted: false })
+      return category
+    }
+  },
+  Article: {
+    category: async (article: ArticleInput) => {
+      const categoryId = article.categoryId
+      const category = await Category.findOne({ _id: categoryId, deleted: false })
       return category
     }
   },
