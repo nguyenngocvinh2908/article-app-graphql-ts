@@ -2,7 +2,7 @@ import express, { Express } from 'express'
 import { ApolloServer } from "apollo-server-express"
 import dotenv from 'dotenv'
 import * as database from './config/database'
-import { typeDefs } from './typedefs'
+import { typeDefs } from './typeDefs/index'
 import { resolvers } from './resolvers'
 
 const startServer = async () => {
@@ -16,7 +16,7 @@ const startServer = async () => {
   const port: number | string = process.env.PORT || 3000;
 
   // GraphSql
-  const apolloServer = new ApolloServer({ typeDefs, resolvers})
+  const apolloServer = new ApolloServer({ typeDefs, resolvers })
 
   await apolloServer.start()
 
