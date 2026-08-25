@@ -15,13 +15,22 @@ interface CreateArticleArgs {
   article: ArticleInput
 }
 
+interface SortAgrs {
+  sortKey?: string,
+  sortValue: 1 | -1 | "asc" | "desc"
+}
+
 type UpdateArticleArgs = ByIdArgs & CreateArticleArgs
 
 
 export const resolversArticle = { 
   Query: {
-    getListArticle: async () => {
-      const articles = await Article.find({ deleted: false })
+    getListArticle: async (_: unknown, agrs: SortAgrs) => {
+      // Sort
+      const { sortKey, sortValue } = agrs
+      let sort: Record<string, 1 | -1 | "asc" | "desc"> = {}
+      if(sortKey && sortValue) sort[sortKey] = sortValue
+      const articles = await Article.find({ deleted: false }).sort(sort)
       return articles
     },
     getArticle: async (_: unknown, args: ByIdArgs) => {
