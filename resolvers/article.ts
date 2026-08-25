@@ -15,22 +15,27 @@ interface CreateArticleArgs {
   article: ArticleInput
 }
 
-interface SortAgrs {
+interface ListArticelAgrs {
   sortKey?: string,
-  sortValue: 1 | -1 | "asc" | "desc"
+  sortValue: 1 | -1 | "asc" | "desc",
+  currentPage: number,
+  limitItem: number
 }
+
 
 type UpdateArticleArgs = ByIdArgs & CreateArticleArgs
 
 
 export const resolversArticle = { 
   Query: {
-    getListArticle: async (_: unknown, agrs: SortAgrs) => {
+    getListArticle: async (_: unknown, agrs: ListArticelAgrs) => {
       // Sort
-      const { sortKey, sortValue } = agrs
+      const { sortKey, sortValue, currentPage, limitItem } = agrs
       let sort: Record<string, 1 | -1 | "asc" | "desc"> = {}
       if(sortKey && sortValue) sort[sortKey] = sortValue
-      const articles = await Article.find({ deleted: false }).sort(sort)
+      // Pavigation
+      const skip = (currentPage - 1) * limitItem
+      const articles = await Article.find({ deleted: false }).sort(sort).limit(limitItem).skip(skip)
       return articles
     },
     getArticle: async (_: unknown, args: ByIdArgs) => {
