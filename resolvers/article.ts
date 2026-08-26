@@ -17,9 +17,12 @@ interface CreateArticleArgs {
 
 interface ListArticelAgrs {
   sortKey?: string,
-  sortValue: 1 | -1 | "asc" | "desc",
-  currentPage: number,
-  limitItem: number
+  sortValue?: 1 | -1 | "asc" | "desc",
+  currentPage?: number,
+  limitItem?: number,
+  filterValue?: string,
+  filterKey?: string
+  keyword?: string
 }
 
 
@@ -29,13 +32,23 @@ type UpdateArticleArgs = ByIdArgs & CreateArticleArgs
 export const resolversArticle = { 
   Query: {
     getListArticle: async (_: unknown, agrs: ListArticelAgrs) => {
+      let find: Record<string, unknown> = { deleted: false }
       // Sort
-      const { sortKey, sortValue, currentPage, limitItem } = agrs
+      const { sortKey, sortValue, currentPage, limitItem, filterKey, filterValue, keyword } = agrs
       let sort: Record<string, 1 | -1 | "asc" | "desc"> = {}
       if(sortKey && sortValue) sort[sortKey] = sortValue
       // Pavigation
-      const skip = (currentPage - 1) * limitItem
-      const articles = await Article.find({ deleted: false }).sort(sort).limit(limitItem).skip(skip)
+      const page = currentPage ?? 1
+      const limit = limitItem ?? 5
+      const skip = (page - 1) * limit
+      // Filter
+      if(filterKey && filterValue) find[filterKey] = filterValue
+      // Search
+      if(keyword) {
+        const keywordRegex = new RegExp(keyword, 'i')
+        find["title"] = keywordRegex
+      }
+      const articles = await Article.find(find).sort(sort).limit(limit).skip(skip)
       return articles
     },
     getArticle: async (_: unknown, args: ByIdArgs) => {

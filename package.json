@@ -16,10 +16,12 @@
     "dotenv": "^17.4.2",
     "express": "^4.22.2",
     "graphql": "^16.14.2",
+    "md5": "^2.3.0",
     "mongoose": "^9.9.3"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
+    "@types/md5": "^2.3.6",
     "@types/node": "^26.2.0",
     "tsx": "^4.23.12",
     "typescript": "^7.0.2"
