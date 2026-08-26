@@ -63,5 +63,25 @@ export const resolversUser = {
         fullName: infoUser.fullName
       }
     }
+  },
+  Query: {
+    getUser: async (_: unknown, args: unknown,  context: UserAgrs) => {
+      const infoUser = await User.findOne({ token: context.user.token, deleted: false })
+      if(!infoUser) {
+        return {
+          code: 400,
+          message: "Unsuccess"
+        }
+      } else {
+        return {
+          code: 200,
+          message: "Success",
+          fullName: infoUser.fullName,
+          email: infoUser.email,
+          id: infoUser._id,
+          token: infoUser.token
+        }
+      }
+    }
   }
 }
