@@ -2,9 +2,14 @@
   "compilerOptions": {
     "target": "ES6",
     "module": "commonjs",
+    "moduleResolution": "bundler",
     "removeComments": true,
     "esModuleInterop": true,
-    "outDir": "dist"
-  } 
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "outDir": "dist",
+    "rootDir": "."
+  },
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules", "dist"]
 }
-

@@ -4,6 +4,7 @@
 
 # Production & Build output
 /build
+/dist
 /.vercel
 
 # Environment variables (Rất quan trọng - Không push file .env lên Git)

@@ -1,33 +1,47 @@
-import express, { Express, Request } from 'express'
-import { ApolloServer } from "apollo-server-express"
+import express, { Express } from 'express'
+import { ApolloServer } from 'apollo-server-express'
 import dotenv from 'dotenv'
 import * as database from './config/database'
 import { typeDefs } from './typeDefs/index'
 import { resolvers } from './resolvers/index'
 import { requireAuth } from './middlewares/auth'
 
-const startServer = async () => {
-  // Env
-  dotenv.config()
+dotenv.config()
 
-  // Connect Database
+const app: Express = express()
+const port = process.env.PORT || 3000
+
+let apolloServer: ApolloServer | null = null
+
+const initApp = async () => {
+  // 1. Kết nối DB
   await database.connectDatabase()
 
-  const app: Express = express()
-  const port: number | string = process.env.PORT || 3000
+  // 2. Auth middleware
+  app.use('/graphql', requireAuth)
 
-  // GraphSql
-  app.use('/graphql', requireAuth )
+  // 3. Khởi tạo Apollo Server
+  if (!apolloServer) {
+    apolloServer = new ApolloServer({
+      typeDefs,
+      resolvers,
+      introspection: true,
+      context: ({ req }) => ({ ...req })
+    })
 
-  const apolloServer = new ApolloServer({ typeDefs, resolvers, context: ({ req }) => { return { ...req } } })
+    await apolloServer.start()
+    apolloServer.applyMiddleware({ app: app as any, path: '/graphql' })
+  }
 
-  await apolloServer.start()
-
-  apolloServer.applyMiddleware({ app: app as any , path: '/graphql' })
-
-  app.listen(port, () => {
-    console.log(`App listening on port ${port}`)
-  })
+  // 4. CHỈ chạy app.listen khi test dưới máy LOCAL
+  if (process.env.NODE_ENV !== 'production') {
+    app.listen(port, () => {
+      console.log(`App listening on port ${port}`)
+    })
+  }
 }
 
-startServer()
+// Chạy hàm khởi tạo
+initApp()
+
+export default app

@@ -1,14 +1,12 @@
 import mongoose from 'mongoose'
 
-export const connectDatabase = async (): Promise<void> => {
+export const connectDatabase = async () => {
+  // Tránh tạo kết nối lặp lại trong môi trường Serverless
+  if (mongoose.connection.readyState >= 1) return
   try {
-    const mongoUrl = process.env.MONGODB_URL
-    if (!mongoUrl) {
-      throw new Error('MONGODB_URL is not defined')
-    }
-    await mongoose.connect(mongoUrl)
-    console.log('Connected to MongoDB')
+    await mongoose.connect(process.env.MONGO_URL || '')
+    console.log('Connect Success!')
   } catch (error) {
-    console.error('Error connecting to MongoDB:', error)
+    console.log('Connect Error:', error)
   }
 }
