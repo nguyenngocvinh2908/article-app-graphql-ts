@@ -18,7 +18,7 @@ const connectDatabase = () => __awaiter(void 0, void 0, void 0, function* () {
     if (mongoose_1.default.connection.readyState >= 1)
         return;
     try {
-        yield mongoose_1.default.connect(process.env.MONGO_URL || '');
+        yield mongoose_1.default.connect(process.env.MONGODB_URL || '');
         console.log('Connect Success!');
     }
     catch (error) {
